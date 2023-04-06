@@ -7,12 +7,10 @@ from scipy.stats import t
 chat_id = 861665812 
 
 def solution(p: float, x: np.array) -> tuple:
+    a = 0.095
     n = len(x)
-    alpha = 1 - p
-    loc = x.mean()
-    t_alpha2 = t.ppf(1 - alpha / 2, n - 1)
-    scale = np.sqrt(np.var(x, ddof=1))
-    a_hat = 2 * loc / 50**2
-    left = a_hat - t_alpha2 * scale / np.sqrt(n) * 2
-    right = a_hat + t_alpha2 * scale / np.sqrt(n) * 2
+    x_max = x.max()
+    alpha = (1 - p)**(1./n)
+    left = x_max
+    right= (x_max - a) / alpha + a
     return (left, right)
