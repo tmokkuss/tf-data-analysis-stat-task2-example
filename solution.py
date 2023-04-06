@@ -1,21 +1,16 @@
-import pandas as pd
 import numpy as np
-
-from scipy.stats import norm
-
+import pandas as pd
+from scipy.stats import chi2
 
 chat_id = 861665812 
 
 def solution(p: float, x: np.array) -> tuple:
-    alpha = 1 - p
-    loc = x.mean()
-    scale = np.sqrt(np.var(x)) / np.sqrt(len(x))
-    
     n = len(x)
-    s2=np.var(x, ddof=1)
-    q1 = chi2.ppf(p/2, df = n -1)
-    q2 = chi2.ppf(alpha/2, df = n-1)
-    left = np.sqrt((n-1)*s2/q2)/np.sqrt(48)
-    right =  np.sqrt((n-1)*s2/q1)/np.sqrt(48)
-    
-    return (left, right)
+    mean_x = np.mean(x)
+    var_x = np.var(x)
+    T = (n - 1) * var_x / 3
+    chi_low = np.percentile(np.random.chisquare(n-1, size=100000), (1-p)/2)
+    chi_high = np.percentile(np.random.chisquare(n-1, size=100000), 1-(1-p)/2)
+    lower = np.sqrt(T / chi_high)
+    upper = np.sqrt(T / chi_low)
+    return (lower, upper)
